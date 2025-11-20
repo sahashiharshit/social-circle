@@ -1,6 +1,6 @@
 import { ImageCard } from "../components/ImageCard";
 
-import SignupForm from "./ui/signup-form";
+// import SignupForm from "./ui/signup-form";
 
 export default function LandingPage() {
 
@@ -15,7 +15,7 @@ export default function LandingPage() {
                 <h2 className="text-3xl font-bold text-gray-800 mb-2">
                     Signup Form
                 </h2>
-                <SignupForm />
+                {/* <SignupForm /> */}
             </div>
         </div>
     )
