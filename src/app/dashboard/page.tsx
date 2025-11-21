@@ -1,3 +1,17 @@
-export default function Dashboard(){
-    return <h1>This is dashboard</h1>
+import { validateSession } from "@/src/lib/auth/validateSession";
+import { redirect } from "next/navigation";
+
+
+
+
+export default async function Dashboard(){
+
+    const session = await validateSession();
+
+    if(!session){
+        redirect('/login');
+    }
+    return (
+        <></>
+    );
 }

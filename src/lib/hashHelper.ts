@@ -14,3 +14,8 @@ export default function passwordHasher({ password, salt }: { password: string, s
 export const generateSalt = () => {
     return crypto.randomBytes(16).toString('hex').normalize()
 }
+
+export const verifyPassword = ({ password, salt, hash }: { password: string, salt: string, hash: string }) => {
+    const hashedPassword = crypto.scryptSync(password, salt, 64).toString('hex');
+    return hashedPassword === hash;
+}

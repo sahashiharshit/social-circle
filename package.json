@@ -9,13 +9,16 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "mongodb": "^7.0.0",
     "next": "16.0.3",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "redis": "^5.10.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/mongodb": "^4.0.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
