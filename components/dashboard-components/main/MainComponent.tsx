@@ -1,0 +1,33 @@
+
+
+
+import Post from "@/components/dashboard-components/main/CreatePostComponent";
+
+import { getVisiblePosts } from "@/lib/database-operations/post-feed";
+
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import Feed from "@/components/dashboard-components/main/Feed";
+
+export default async function MainContent() {
+   
+   const session = await auth.api.getSession({headers:await headers()})
+    if(!session) return null;
+    const currentUserId = session.user.id;
+
+    const {posts,nextCursor} = await getVisiblePosts(currentUserId,20);
+    return (
+
+        <div className="w-full flex-1 overflow-y-auto px-3 pb-10">
+            <div className="flex">
+                <Post/>
+            </div>
+            <div className="mt-4 space-y-4">
+                {/* {posts.map((post)=>(
+                    <PostCard key={post.id} post={post} />
+                ))} */}
+                <Feed initialPosts={posts} initialCursor={nextCursor}/>
+            </div>
+        </div>
+    );
+}

@@ -1,0 +1,176 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                     String       @id
+  name                   String
+  email                  String
+  emailVerified          Boolean      @default(false)
+  image                  String?
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+  sessions               Session[]
+  accounts               Account[]
+  posts                  Post[]
+  comments               Comment[]
+  postLikes              PostLike[]
+  friendsCount           Int          @default(0)
+  sendFriendRequests     Friendship[] @relation("FriendRequestRequester")
+  receivedFriendRequests Friendship[] @relation("FriendRequestAddressee")
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Post {
+  id       String @id @default(cuid())
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // Either text, image or both (enforce “at least one” in application logic)
+  content  String?
+  imageUrl String?
+  fullLocation Json?
+  privacy  PostPrivacy @default(PUBLIC)
+  likeCount    Int @default(0)
+  commentCount Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comments Comment[]
+  likes    PostLike[]
+
+  @@index([authorId])
+  @@map("post")
+}
+
+model Comment {
+  id     String @id @default(cuid())
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([postId])
+  @@index([authorId])
+  @@map("comment")
+}
+
+model PostLike {
+  id     String @id @default(cuid())
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  // One like per user per post
+  @@unique([postId, userId])
+  @@index([postId])
+  @@index([userId])
+  @@map("post_like")
+}
+
+model Friendship {
+  id String @id @default(cuid())
+
+  // The user who SENT the request
+  requesterId String
+  requester   User   @relation("FriendRequestRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+
+  // The user who RECEIVES the request
+  addresseeId String
+  addressee   User   @relation("FriendRequestAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+
+  // pending | accepted | rejected | blocked (optional)
+  status FriendshipStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([requesterId, addresseeId]) // Prevent duplicates
+  @@index([requesterId])
+  @@index([addresseeId])
+  @@map("friendship")
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  BLOCKED
+}
+enum PostPrivacy {
+  PUBLIC
+  PRIVATE
+  FRIENDS_ONLY
+}
