@@ -249,7 +249,7 @@ export default function ProfileGallery() {
                                         />
 
                                         {/* Overlay: who posted */}
-                                        <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/60 to-transparent text-xs text-white flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="absolute inset-x-0 bottom-0 p-2 bg-linear-to-t from-black/60 to-transparent text-xs text-white flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                             {item.author?.image && (
                                                 // eslint-disable-next-line @next/next/no-img-element
                                                 <img

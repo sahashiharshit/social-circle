@@ -88,12 +88,12 @@ model Post {
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   // Either text, image or both (enforce “at least one” in application logic)
-  content  String?
-  imageUrl String?
+  content      String?
+  imageUrl     String?
   fullLocation Json?
-  privacy  PostPrivacy @default(PUBLIC)
-  likeCount    Int @default(0)
-  commentCount Int @default(0)
+  privacy      PostPrivacy @default(PUBLIC)
+  likeCount    Int         @default(0)
+  commentCount Int         @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -169,6 +169,7 @@ enum FriendshipStatus {
   REJECTED
   BLOCKED
 }
+
 enum PostPrivacy {
   PUBLIC
   PRIVATE

@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { PostPrivacy } from "@/lib/generated/prisma/enums";
-import { Prisma } from "../generated/prisma/client";
+
 
 
 
