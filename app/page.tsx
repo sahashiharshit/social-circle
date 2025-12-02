@@ -7,6 +7,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 
 
+
 export default async function LandingPage() {
   const cookieStore = cookies();
   const sessionCookie = (await cookieStore).get("better-auth.session_token");
@@ -20,6 +21,7 @@ export default async function LandingPage() {
   }
 
   return (
+ 
 
     <div className="min-h-screen flex items-center justify-center bg-accent">
 
@@ -27,7 +29,7 @@ export default async function LandingPage() {
         {/* Demo: replace with <Image /> from next/image for real images */}
         <div className="relative w-96 h-96">
           <div className="absolute top-8 left-8 w-96 h-96 rounded-2xl overflow-hidden shadow-lg">
-            <Image src="/landingImage.png" alt="Social Circle" fill className="w-full h-full object-cover" />
+            <Image src="/landingImage.png" alt="Social Circle" fill className="w-full h-full object-cover" loading="eager"/>
           </div>
           {/* Add stickers, overlays using more positioned divs */}
         </div>
@@ -36,6 +38,7 @@ export default async function LandingPage() {
     </div>
 
 
+    
   )
 }
 

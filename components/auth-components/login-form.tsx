@@ -1,5 +1,5 @@
 "use client"
-import { cn } from "@/lib/utils"
+
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -10,9 +10,10 @@ import {
 } from "@/components/ui/card"
 
 import { Input } from "@/components/ui/input"
-import { login } from "@/app/actions/auth-actions"
+import { login, socialProvider } from "@/app/actions/auth-actions"
 import { useActionState } from "react"
 import { FormState } from "@/app/actions/auth-actions"
+import Link from "next/link"
 export function LoginForm({
   className,
   ...props
@@ -26,6 +27,9 @@ export function LoginForm({
     initialState
   );
 
+  function handleGoogleLogin(){
+    socialProvider();
+  }
   return (
     
       <Card className="w-full max-w-sm">
@@ -56,12 +60,16 @@ export function LoginForm({
               <span className="mx-2 text-gray-500">OR</span>
               <span className="border-t w-full"></span>
             </div>
-            <Button variant="outline" className="w-full flex justify-center items-center gap-2">
+           
+  
+          </form>
+           <Button variant="outline" className="w-full flex justify-center items-center gap-2" onClick={
+              handleGoogleLogin
+            }>
              
               Log in with Google
             </Button>
-            <p className="text-xs text-center mt-2 text-indigo-400 cursor-pointer">Forgot password?</p>
-          </form>
+            <Link href="/forget-password">  <p className="text-xs text-center mt-2 text-indigo-400 cursor-pointer">Forgot password?</p></Link>
         </CardContent>
         <div className="mt-4 text-center">
           <span>Don't have an account?</span>

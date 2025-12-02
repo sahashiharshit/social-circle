@@ -32,12 +32,13 @@ export async function getFriendSuggestions(userId: string) {
 
     });
     // Extract blocked IDs (already connected in any way)
-    const excludedIds = new Set(
-        allRelations.flatMap(r => [r.requesterId, r.addresseeId])
-    );
+    const excludedIds = new Set<string>();
 
     excludedIds.add(userId); // exclude myself
-
+    allRelations.forEach(r=>{
+        excludedIds.add(r.requesterId);
+        excludedIds.add(r.addresseeId);
+    })
     // Suggest users not connected to us
     const suggestions = await prisma.user.findMany({
         where: {
@@ -54,4 +55,23 @@ export async function getFriendSuggestions(userId: string) {
     });
 
     return suggestions;
+}
+
+export async function getIncomingFriendRequests(userId:string){
+    const requests = await prisma.friendship.findMany({
+        where:{
+            status:"PENDING",
+            addresseeId:userId,
+        },
+        include:{
+            requester:{
+                select:{id:true,name:true,image:true},
+            },
+        },
+    });
+
+    return requests.map(r=>({
+        id:r.id,
+        requester:r.requester,
+    }));
 }

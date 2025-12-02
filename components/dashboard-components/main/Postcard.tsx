@@ -1,11 +1,16 @@
+"use client"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import CommentButton from "@/components/ui/commentButton";
+import LikeButton from "@/components/ui/likeButton";
+import { FALLBACK_AVATAR } from "@/lib/fallbackImage";
 import { FeedPost } from "@/types/Post";
 import Image from "next/image";
-import { FaLocationArrow } from "react-icons/fa";
+import { FaComment, FaLocationArrow, FaThumbsUp } from "react-icons/fa";
 
 
 
 export default function PostCard({post}:{post:FeedPost}){
+    
     const location = post.fullLocation as {name?:string
         lat?:string|null;
         lon?:string|null;
@@ -15,7 +20,7 @@ export default function PostCard({post}:{post:FeedPost}){
       <CardHeader>
         <div className="flex items-center gap-3">
           <Image
-            src={post.author.image || "/logo.png"}
+            src={post.author.image || FALLBACK_AVATAR}
             width={40}
             height={40}
             className="rounded-full"
@@ -56,10 +61,10 @@ export default function PostCard({post}:{post:FeedPost}){
       </CardContent>
 
       <CardFooter>
-        <div className="flex justify-between w-full text-sm opacity-70">
-          <button className="hover:opacity-100">Like</button>
-          <button className="hover:opacity-100">Comment</button>
-          <button className="hover:opacity-100">Share</button>
+        <div className="flex justify-start gap-10 w-full text-sm opacity-70">
+          
+          <LikeButton/>
+          <CommentButton/>
         </div>
       </CardFooter>
     </Card>

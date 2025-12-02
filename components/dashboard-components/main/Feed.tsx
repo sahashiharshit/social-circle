@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import PostCard from "@/components/dashboard-components/main/Postcard";
-import { loadMorePosts } from "@/app/actions/feed";
+
 import type { FeedPost, FeedResponse } from "@/types/Post";
 
 export default function Feed({

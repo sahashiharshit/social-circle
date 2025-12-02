@@ -10,6 +10,7 @@ import { useSession } from "@/context/SessionContext";
 import Image from "next/image";
 
 import PrivacySelect, { PrivacyValue } from "@/components/dashboard-components/main/PrivacySelect";
+import { FALLBACK_AVATAR } from "@/lib/fallbackImage";
 
 
 
@@ -52,6 +53,7 @@ export default function Post() {
     const [loading, setLoading] = useState(false);
     const [privacy, setPrivacy] = useState<PrivacyValue>("public");
     const session = useSession();
+    
     async function loadNearby() {
         setLoading(true);
         navigator.geolocation.getCurrentPosition(async ({ coords }) => {
@@ -97,7 +99,7 @@ export default function Post() {
         <div className="w-full mx-auto p-4 bg-accent/40 rounded-lg shadow-md">
             <div className="flex space-x-4">
                 <Avatar className="w-16 h-16 ">
-                    <AvatarImage src="/logo.png" className="rounded-4xl" />
+                    <AvatarImage src={FALLBACK_AVATAR} className="rounded-4xl" />
                     <AvatarFallback>Image</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 ">
@@ -147,7 +149,7 @@ export default function Post() {
                             <div className="flex gap-3 items-center mb-4">
                                 <Avatar className="shrink-0">
                                     <Image
-                                        src={session?.user.image || "/logo.png"}
+                                        src={session?.user.image || FALLBACK_AVATAR}
                                         width={40}
                                         height={40}
                                         className="rounded-full"

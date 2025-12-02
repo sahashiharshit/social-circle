@@ -77,3 +77,16 @@ export async function logout() {
   redirect('/');
 
 }
+export async function socialProvider(){
+ const {redirect:redirectUrl,url}=await auth.api.signInSocial({
+ body:{
+  provider:"google",
+  callbackURL:"/dashboard",
+ }
+
+ });
+ if(redirectUrl){
+redirect(url!);
+ }
+ 
+}

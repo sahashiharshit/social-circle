@@ -1,0 +1,1 @@
+export const FALLBACK_AVATAR='https://social-circle-image-bucket.s3.ap-south-1.amazonaws.com/defaultImage/useravatar.png';

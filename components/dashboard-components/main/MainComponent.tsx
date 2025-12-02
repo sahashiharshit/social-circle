@@ -18,7 +18,7 @@ export default async function MainContent() {
     const {posts,nextCursor} = await getVisiblePosts(currentUserId,20);
     return (
 
-        <div className="w-full flex-1 overflow-y-auto px-3 pb-10">
+        <div className="w-full flex-1 overflow-y-auto pb-10 px-30">
             <div className="flex">
                 <Post/>
             </div>

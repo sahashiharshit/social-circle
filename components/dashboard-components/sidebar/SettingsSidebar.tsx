@@ -17,7 +17,7 @@ export default function SettingsSidebar() {
     <aside className="w-64 border-r p-4 bg-accent/40">
       <nav className="space-y-2">
         {links.map(link => {
-          const active = pathname === link.href;
+          const active = pathname === link.href || pathname.startsWith(link.href + "/");
           return (
             <Link
               key={link.href}
