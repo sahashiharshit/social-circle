@@ -10,7 +10,7 @@ import { redirect } from "next/navigation";
 
 export default async function LandingPage() {
   const cookieStore = cookies();
-  const sessionCookie = (await cookieStore).get("better-auth.session_token");
+  const sessionCookie = (await cookieStore).get("_Secure-better-auth.session_token");
   if (sessionCookie) {
     const session = await auth.api.getSession({
       headers: await headers()
