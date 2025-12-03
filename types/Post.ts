@@ -1,10 +1,6 @@
 
-
-
 import { Prisma } from "@/lib/generated/prisma/client";
-
-
-export type FeedPost = Prisma.PostGetPayload<{
+export type FeedPostRaw = Prisma.PostGetPayload<{
     include: {
         author: {
             select: {
@@ -15,8 +11,10 @@ export type FeedPost = Prisma.PostGetPayload<{
         }
     };
 }>;
-
+export type FeedPost = FeedPostRaw & {
+    likedByMe: boolean
+}
 export type FeedResponse = {
-  posts: FeedPost[];
-  nextCursor: string | null;
+    posts: FeedPost[];
+    nextCursor: string | null;
 };

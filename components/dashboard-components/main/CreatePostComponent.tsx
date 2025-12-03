@@ -41,7 +41,7 @@ function MainModal({ isOpen, onClose, children }: { isOpen: boolean, onClose: ()
     )
 
 }
-export default function Post() {
+export default function Post({ image }: { image: string|null|undefined }) {
     const [isMainOpen, setMainOpen] = useState(false);
     const [modalScreen, setModalScreen] = useState<"post" | "location">("post");
     const [content, setContent] = useState("");
@@ -53,7 +53,7 @@ export default function Post() {
     const [loading, setLoading] = useState(false);
     const [privacy, setPrivacy] = useState<PrivacyValue>("public");
     const session = useSession();
-    
+
     async function loadNearby() {
         setLoading(true);
         navigator.geolocation.getCurrentPosition(async ({ coords }) => {
@@ -99,7 +99,7 @@ export default function Post() {
         <div className="w-full mx-auto p-4 bg-accent/40 rounded-lg shadow-md">
             <div className="flex space-x-4">
                 <Avatar className="w-16 h-16 ">
-                    <AvatarImage src={FALLBACK_AVATAR} className="rounded-4xl" />
+                    <AvatarImage src={image || FALLBACK_AVATAR} className="rounded-4xl" />
                     <AvatarFallback>Image</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 ">
@@ -149,7 +149,7 @@ export default function Post() {
                             <div className="flex gap-3 items-center mb-4">
                                 <Avatar className="shrink-0">
                                     <Image
-                                        src={session?.user.image || FALLBACK_AVATAR}
+                                        src={image || FALLBACK_AVATAR}
                                         width={40}
                                         height={40}
                                         className="rounded-full"
@@ -158,12 +158,12 @@ export default function Post() {
                                 </Avatar>
                                 <div className="flex flex-col justify-between h-12 min-w-0 flex-1">
                                     <span className=" text-sm leading-tight truncate font-medium">{session?.user.name}</span>
-                                    <PrivacySelect 
-                                    value={privacy}
-                                    onChange={setPrivacy}
-                                    name="privacy-choice"
-                                    />                        
-                                    
+                                    <PrivacySelect
+                                        value={privacy}
+                                        onChange={setPrivacy}
+                                        name="privacy-choice"
+                                    />
+
                                 </div>
                             </div>
 
@@ -228,7 +228,7 @@ export default function Post() {
                                     aria-label="Add photo"
                                     onClick={() => selectPhoto(async (photo) => {
                                         const compressed = await compressImage(photo.file);
-                                        console.log(compressed)
+
                                         const compressedPreview = URL.createObjectURL(compressed);
                                         setPhotoPreview(compressedPreview);
                                         if (photoInputRef.current) {

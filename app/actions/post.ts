@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth";
 
 import { prisma } from "@/lib/prisma";
-import {type UploadPhotoResult, uploadPhotoToS3 } from "@/lib/uploadImage";
+import {type UploadPhotoResult, uploadPhotoToS3 } from "@/lib/cloudFunctions";
 import { headers } from "next/headers";
 
 
@@ -56,7 +56,7 @@ export async function createPost(formData: FormData) {
     }
 
     //Create the post in DB
-   console.log(formData);
+ 
     const post = await prisma.post.create({
         data:{
             authorId:userId,

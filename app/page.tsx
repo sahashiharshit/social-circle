@@ -1,7 +1,7 @@
 
 import { LoginForm } from "@/components/auth-components/login-form";
 import { auth } from "@/lib/auth";
-
+import "dotenv";
 import { cookies, headers } from "next/headers";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -10,7 +10,7 @@ import { redirect } from "next/navigation";
 
 export default async function LandingPage() {
   const cookieStore = cookies();
-  const sessionCookie = (await cookieStore).get("__Secure-better-auth.session_token");
+  const sessionCookie = (await cookieStore).get(process.env.COOKIE_TOKEN!);
   if (sessionCookie) {
     const session = await auth.api.getSession({
       headers: await headers()

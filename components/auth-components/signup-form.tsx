@@ -15,7 +15,7 @@ import {
 
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { signup } from "@/app/actions/auth-actions"
+import { signup, socialProvider } from "@/app/actions/auth-actions"
 type SignupValues = {
   name: string;
   email: string;
@@ -33,11 +33,14 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     });
     try {
       await signup(formData);
-    
+
 
     } catch (error: any) {
-     
+
     }
+  }
+  function handleGoogleLogin() {
+    socialProvider();
   }
   return (
     <Card {...props}>
@@ -108,16 +111,25 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 <span className="mx-2 text-gray-500">OR</span>
                 <span className="border-t w-full"></span>
               </div>
-              <Button variant="outline" type="button">
-                Sign up with Google
-              </Button>
-              <FieldDescription className="px-6 text-center">
-                Already have an account? <a href="/">Sign in</a>
-              </FieldDescription>
+
+
             </Field>
           </FieldGroup>
 
         </form>
+        <FieldGroup>
+          <Field>
+            <Button variant="outline" onClick={
+              handleGoogleLogin
+            }>
+              Sign up with Google
+            </Button>
+            <FieldDescription className="px-6 text-center">
+              Already have an account? <a href="/">Sign in</a>
+            </FieldDescription>
+          </Field>
+        </FieldGroup>
+
       </CardContent>
     </Card>
   )

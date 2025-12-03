@@ -5,7 +5,7 @@ import LikeButton from "@/components/ui/likeButton";
 import { FALLBACK_AVATAR } from "@/lib/fallbackImage";
 import { FeedPost } from "@/types/Post";
 import Image from "next/image";
-import { FaComment, FaLocationArrow, FaThumbsUp } from "react-icons/fa";
+import {  FaLocationArrow } from "react-icons/fa";
 
 
 
@@ -63,8 +63,15 @@ export default function PostCard({post}:{post:FeedPost}){
       <CardFooter>
         <div className="flex justify-start gap-10 w-full text-sm opacity-70">
           
-          <LikeButton/>
-          <CommentButton/>
+          <LikeButton 
+          postId={post.id}
+          initialLiked={post.likedByMe}
+          initialCount={post.likeCount}
+          />
+          <CommentButton
+          postId={post.id}
+          commentCount={post.commentCount}
+          />
         </div>
       </CardFooter>
     </Card>
