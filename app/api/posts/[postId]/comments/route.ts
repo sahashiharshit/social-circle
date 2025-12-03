@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 
 
 
+
 export async function POST(req: NextRequest,
   { params }: { params: Promise<{ postId: string }>}) {
   const session = await auth.api.getSession(
@@ -43,14 +44,16 @@ export async function POST(req: NextRequest,
       return new NextResponse("Invalid parent comment", { status: 400 });
     }
   }
-
+try{
   const comment = await prisma.$transaction(async (tx) => {
     const created = await tx.comment.create({
       data: {
         postId,
         authorId: user.id,
         content,
-        parentId: parentId ?? null,
+        ...(parentId
+          ?{parentId}
+        :{}),
       },
       include: {
         author: {
@@ -69,16 +72,20 @@ export async function POST(req: NextRequest,
   });
 
   return NextResponse.json(comment);
+}catch(err){
+  return new NextResponse("Internal Server Error",{status:500})
+}
 }
 
 export async function GET(req: NextRequest,
   { params }: { params: Promise<{ postId: string }>}) {
   const  postId  = (await params).postId;
 
+try{
   const comments = await prisma.comment.findMany({
     where: {
       postId,
-      parentId: null,
+      //parentId: null,
     },
     include: {
       author: {
@@ -97,4 +104,9 @@ export async function GET(req: NextRequest,
   });
 
   return NextResponse.json(comments);
+}
+catch (err) {
+    console.log(err);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
 }

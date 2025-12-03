@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import PostCard from "@/components/dashboard-components/main/Postcard";
 
-import type { FeedPost, FeedPostRaw, FeedResponse } from "@/types/Post";
+import type { FeedPost, FeedResponse } from "@/types/Post";
 
 export default function Feed({
     initialPosts,

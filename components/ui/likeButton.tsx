@@ -47,7 +47,7 @@ export default function LikeButton({
       }`}
       onClick={toggleLike}
     >
-      <FaThumbsUp size={15} />
+      <FaThumbsUp size={20} />
       <span>{count}</span>
     </button>
   );

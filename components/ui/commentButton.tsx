@@ -2,14 +2,16 @@
 
 import { FaComment } from "react-icons/fa";
 import { useState } from "react";
-import CommentSection from "@/components/ui/commentSection";
+
 
 export default function CommentButton({
   postId,
-  commentCount
+  commentCount,
+  onToggle
 }: {
   postId: string;
   commentCount: number;
+  onToggle:()=>void;
 }) {
 
   const [open, setOpen] = useState(false);
@@ -17,14 +19,14 @@ export default function CommentButton({
   return (
     <div className="flex flex-col w-full">
       <button
-        onClick={() => setOpen(!open)}
+        onClick={onToggle}
         className="flex items-center gap-1 opacity-70 hover:opacity-100"
       >
-        <FaComment size={15} />
+        <FaComment size={20} />
         <span>{commentCount}</span>
       </button>
 
-      {open && <CommentSection postId={postId} />}
+    
     </div>
   );
 }

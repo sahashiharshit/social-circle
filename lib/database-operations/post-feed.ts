@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
+import { FeedPost } from "@/types/Post";
 
 
-export async function getVisiblePosts(currentUserId: string, limit = 20, cursor?: string) {
+export async function getVisiblePosts(currentUserId: string, limit = 20, cursor?: string|null):Promise<{posts:FeedPost[];nextCursor:string|null}> {
 
     const friends = await prisma.friendship.findMany({
         where: {
@@ -18,7 +19,7 @@ export async function getVisiblePosts(currentUserId: string, limit = 20, cursor?
     });
 
     const friendIds = friends.map(f => f.requesterId === currentUserId ? f.addresseeId : f.requesterId);
-    const posts = await prisma.post.findMany({
+    const postsRaw = await prisma.post.findMany({
         where: {
             OR: [
                 {
@@ -45,8 +46,11 @@ export async function getVisiblePosts(currentUserId: string, limit = 20, cursor?
                     id: true,
                     name: true,
                     image: true
-                }
-            }
+                },
+            },
+            likes:{
+                select:{userId:true},
+            },
         },
         orderBy: { createdAt: "desc" },
         take: limit + 1,
@@ -54,10 +58,14 @@ export async function getVisiblePosts(currentUserId: string, limit = 20, cursor?
         skip: cursor ? 1 : 0
     });
     let nextCursor: string | null = null;
-    if (posts.length > limit) {
-        const next = posts.pop();
+    if (postsRaw.length > limit) {
+        const next = postsRaw.pop();
         nextCursor = next?.id ?? null;
     }
+    const posts:FeedPost[]=postsRaw.map((post)=>({
+        ...post,
+        likedByMe:post.likes.some((l)=>l.userId===currentUserId),
+    }));
     return {
         posts,
         nextCursor

@@ -1,16 +1,18 @@
 "use client"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import CommentButton from "@/components/ui/commentButton";
+import CommentSection from "@/components/ui/commentSection";
 import LikeButton from "@/components/ui/likeButton";
 import { FALLBACK_AVATAR } from "@/lib/fallbackImage";
 import { FeedPost } from "@/types/Post";
 import Image from "next/image";
+import { useState } from "react";
 import {  FaLocationArrow } from "react-icons/fa";
 
 
 
 export default function PostCard({post}:{post:FeedPost}){
-    
+    const [openComments,setOpenComments] = useState(false);
     const location = post.fullLocation as {name?:string
         lat?:string|null;
         lon?:string|null;
@@ -71,9 +73,15 @@ export default function PostCard({post}:{post:FeedPost}){
           <CommentButton
           postId={post.id}
           commentCount={post.commentCount}
+          onToggle={()=>setOpenComments(!openComments)}
           />
         </div>
       </CardFooter>
+      {openComments && (
+        <div className="px-4 pb-3">
+          <CommentSection postId={post.id} />
+        </div>
+      )}
     </Card>
     );
 }
