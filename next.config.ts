@@ -9,13 +9,17 @@ const nextConfig: NextConfig = {
   },
   productionBrowserSourceMaps:false,
   images:{
-    domains:['lh3.googleusercontent.com'],
+ 
     remotePatterns:[
       {
         protocol:"https",
         hostname:"social-circle-image-bucket.s3.ap-south-1.amazonaws.com",
         pathname:"/**",
       },
+      {
+        protocol:"https",
+        hostname:'lh3.googleusercontent.com'
+      }
     ],
   },
 };
