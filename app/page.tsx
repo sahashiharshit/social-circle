@@ -20,7 +20,9 @@ export default async function LandingPage() {
       redirect("/dashboard");
     }
   }
-
+const imageSrc = process.env.CLOUDFRONT_DOMAIN
+  ? `${process.env.CLOUDFRONT_DOMAIN}/defaultImage/landingImage.png`
+  : "/landingimage.png";
   return (
     <>
   <PageLoader/>
@@ -30,7 +32,7 @@ export default async function LandingPage() {
         {/* Demo: replace with <Image /> from next/image for real images */}
         <div className="relative w-96 h-96">
           <div className="absolute top-8 left-8 w-96 h-96 rounded-2xl overflow-hidden shadow-lg">
-            <Image src="/landingImage.png" alt="Social Circle" fill className="w-full h-full object-cover" loading="eager"/>
+            <Image src={imageSrc} alt="Social Circle" fill className="w-full h-full object-cover" loading="eager"/>
           </div>
           {/* Add stickers, overlays using more positioned divs */}
         </div>
