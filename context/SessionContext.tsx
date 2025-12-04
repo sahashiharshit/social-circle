@@ -6,7 +6,6 @@ import { createContext, useContext } from "react";
 const SessionContext = createContext<ClientSession>(null);
 
 export const SessionProvider =({
-
     value,
     children,
 }:{

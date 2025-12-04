@@ -1,5 +1,6 @@
 
 import { LoginForm } from "@/components/auth-components/login-form";
+import PageLoader from "@/components/ui/pageLoader";
 import { auth } from "@/lib/auth";
 import "dotenv";
 import { cookies, headers } from "next/headers";
@@ -21,8 +22,8 @@ export default async function LandingPage() {
   }
 
   return (
- 
-
+    <>
+  <PageLoader/>
     <div className="min-h-screen flex items-center justify-center bg-accent">
 
       <div className="hidden lg:flex items-center justify-center mr-12">
@@ -36,7 +37,7 @@ export default async function LandingPage() {
       </div>
       <LoginForm />
     </div>
-
+</>
 
     
   )

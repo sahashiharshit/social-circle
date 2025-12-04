@@ -2,7 +2,7 @@ import { s3Client } from "@/lib/s3";
 import { revalidatePath } from "next/cache";
 import "dotenv";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
-import { success } from "zod";
+
 
 export type UploadPhotoResult =
     | {
@@ -17,7 +17,7 @@ export type UploadPhotoResult =
     };
 const BUCKET_NAME = process.env.AWS_BUCKET_NAME!;
 const region = process.env.AWS_REGION!;
-const publicBaseUrl = `https://${BUCKET_NAME}.s3.${region}.amazonaws.com`;
+const cloudfronturl = process.env.CLOUDFRONT_DOMAIN!;
 export async function uploadPhotoToS3(file: File): Promise<UploadPhotoResult> {
 
     try {
@@ -63,7 +63,7 @@ export async function uploadProfileImageToS3(file: File, userId: string) {
     };
     const command = new PutObjectCommand(params);
     await s3Client.send(command);
-    const url = `${publicBaseUrl}/${key}`;
+    const url = `${cloudfronturl}/${key}`;
     return { url:url,fileName: key };
 }
 export async function deleteFromS3(key: string) {
@@ -80,9 +80,9 @@ export function keyFromImageUrl(url: string): string | null {
     if (!url) return null;
     try {
         const u = new URL(url);
-        const base = publicBaseUrl.endsWith("/") ?
-            publicBaseUrl.slice(0, -1) :
-            publicBaseUrl;
+        const base = cloudfronturl.endsWith("/") ?
+            cloudfronturl.slice(0, -1) :
+            cloudfronturl;
 
         if(url.startsWith(base)){
             return url.slice(base.length +1);

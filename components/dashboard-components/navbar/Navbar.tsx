@@ -18,7 +18,7 @@ export default  function Navbar() {
                 <span className="font-bold text-xl hidden md:inline">Social Circle</span>
             </Link>
             <div className="flex items-center space-x-2">
-                <div><Link href="/profile">{session?.user.name}</Link></div>
+                <div>{session?.user.name}</div>
                 <ThemeToggle />
                 <UserDropdown user={session?.user ?? null} />
             </div>

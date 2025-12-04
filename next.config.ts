@@ -13,12 +13,13 @@ const nextConfig: NextConfig = {
     remotePatterns:[
       {
         protocol:"https",
-        hostname:"social-circle-image-bucket.s3.ap-south-1.amazonaws.com",
+        hostname:"dupsstqkif8kw.cloudfront.net",
         pathname:"/**",
       },
       {
         protocol:"https",
-        hostname:'lh3.googleusercontent.com'
+        hostname:'lh3.googleusercontent.com',
+        pathname:"/**",
       }
     ],
   },

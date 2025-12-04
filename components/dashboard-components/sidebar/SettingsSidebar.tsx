@@ -7,8 +7,7 @@ const links = [
   { name: "Overview", href: "/settings" },
   { name: "Profile", href: "/settings/profile" },
   { name: "Account", href: "/settings/account" },
-  { name: "Privacy", href: "/settings/privacy" },
-  { name: "Notifications", href: "/settings/notifications" },
+  
 ]
 
 export default function SettingsSidebar() {

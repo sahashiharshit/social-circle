@@ -1,7 +1,8 @@
 "use client";
 
 import { FaComment } from "react-icons/fa";
-import { useState } from "react";
+
+
 
 
 export default function CommentButton({
@@ -14,7 +15,7 @@ export default function CommentButton({
   onToggle:()=>void;
 }) {
 
-  const [open, setOpen] = useState(false);
+
 
   return (
     <div className="flex flex-col w-full">

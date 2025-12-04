@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { signup, socialProvider } from "@/app/actions/auth-actions"
+import { useState } from 'react'
+import { toast } from 'sonner'
 type SignupValues = {
   name: string;
   email: string;
@@ -23,7 +25,7 @@ type SignupValues = {
   confirmPassword: string;
 };
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
-
+  const [googleLoading, setGoogleLoading] = useState(false);
   const { register, handleSubmit, watch, formState: { errors, isSubmitting }, } = useForm<SignupValues>();
   const password = watch('password');
   const onSubmit = async (data: SignupValues) => {
@@ -39,8 +41,15 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
     }
   }
-  function handleGoogleLogin() {
-    socialProvider();
+  async function handleGoogleLogin() {
+    setGoogleLoading(true);
+    try {
+      await socialProvider();
+    } catch (error) {
+      toast.error("Google login failed")
+      setGoogleLoading(false);
+    }
+
   }
   return (
     <Card {...props}>
@@ -119,10 +128,24 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         </form>
         <FieldGroup>
           <Field>
-            <Button variant="outline" onClick={
+            <Button variant="outline" className="relative w-full h-10 flex justify-center items-center " onClick={
               handleGoogleLogin
-            }>
-              Sign up with Google
+            }
+              disabled={googleLoading}>
+              {googleLoading && (
+                <span
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <span
+                    className="animate-spin h-5 w-5 rounded-full border-2 border-current border-t-transparent "
+                  ></span>
+                </span>
+              )}
+
+              {/* Text (hidden when loading) */}
+              <span className={googleLoading ? "opacity-0" : "opacity-100"}>
+                Log in with Google
+              </span>
             </Button>
             <FieldDescription className="px-6 text-center">
               Already have an account? <a href="/">Sign in</a>

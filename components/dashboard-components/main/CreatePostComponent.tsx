@@ -7,10 +7,13 @@ import { IoArrowBack, IoCloseCircle, IoRemoveCircle } from "react-icons/io5";
 import { createPost } from "@/app/actions/post";
 import { compressImage } from "@/lib/compressImage";
 import { useSession } from "@/context/SessionContext";
-import Image from "next/image";
+
 
 import PrivacySelect, { PrivacyValue } from "@/components/dashboard-components/main/PrivacySelect";
 import { FALLBACK_AVATAR } from "@/lib/fallbackImage";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
 
 
 
@@ -29,9 +32,7 @@ function MainModal({ isOpen, onClose, children }: { isOpen: boolean, onClose: ()
     if (!isOpen) return null
     return (
         <>
-            {/* Backdrop */}
             <div className="fixed inset-0 bg-black/50 z-40" />
-            {/* Modal content */}
             <div className="fixed inset-0 flex items-center justify-center z-50 p-4 " onClick={onClose}>
                 <div className="bg-accent rounded-lg max-w-lg w-full max-h-[90vh] overflow-visible p-6 shadow-lg relative" onClick={e => e.stopPropagation()}>
                     {children}
@@ -41,17 +42,21 @@ function MainModal({ isOpen, onClose, children }: { isOpen: boolean, onClose: ()
     )
 
 }
-export default function Post({ image }: { image: string|null|undefined }) {
+export default function Post({ image }: { image: string | null | undefined }) {
     const [isMainOpen, setMainOpen] = useState(false);
     const [modalScreen, setModalScreen] = useState<"post" | "location">("post");
     const [content, setContent] = useState("");
     const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-    const photoInputRef = useRef<HTMLInputElement | null>(null)
+
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<Location[]>([]);
     const [loading, setLoading] = useState(false);
     const [privacy, setPrivacy] = useState<PrivacyValue>("public");
+    const [isPosting, setIsPosting] = useState(false);
+    const [optimisticPost, setOptimisticPost] = useState<any | null>(null);
+    const photoInputRef = useRef<HTMLInputElement | null>(null);
+    const router = useRouter();
     const session = useSession();
 
     async function loadNearby() {
@@ -95,11 +100,54 @@ export default function Post({ image }: { image: string|null|undefined }) {
         );
         setLoading(false);
     }
+    async function handlePostSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsPosting(true);
+
+    // ⭐ Create optimistic post object
+    const optimistic = {
+      id: "temp-" + Date.now(),
+      content,
+      imageUrl: photoPreview,
+      author: {
+        name: session?.user.name,
+        image: image || FALLBACK_AVATAR,
+      },
+      createdAt: new Date().toISOString(),
+      fullLocation: selectedLocation ? { name: selectedLocation.name } : null,
+      likeCount: 0,
+      likedByMe: false,
+      commentCount: 0,
+    };
+
+    // Show it instantly
+    window.dispatchEvent(
+      new CustomEvent("new-optimistic-post", { detail: optimistic })
+    );
+
+    const formData = new FormData(e.currentTarget);
+
+    const ok = await createPost(formData);
+
+    setIsPosting(false);
+
+    if (ok) {
+      toast.success("Post created!");
+      router.refresh();
+      setTimeout(() => setMainOpen(false), 150);
+
+      // Reset state
+      setContent("");
+      setSelectedLocation(null);
+      setPhotoPreview(null);
+      if (photoInputRef.current) photoInputRef.current.value = "";
+    }
+  }
     return (
         <div className="w-full mx-auto p-4 bg-accent/40 rounded-lg shadow-md">
             <div className="flex space-x-4">
-                <Avatar className="w-16 h-16 ">
-                    <AvatarImage src={image || FALLBACK_AVATAR} className="rounded-4xl" />
+                <Avatar className="w-12 h-12 rounded-full overflow-hidden">
+                    <AvatarImage src={image || FALLBACK_AVATAR} className="object-cover w-full h-full" width={48} height={48} />
                     <AvatarFallback>Image</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 ">
@@ -136,25 +184,11 @@ export default function Post({ image }: { image: string|null|undefined }) {
                             : "hidden"
                             }`}
                     >
-                        <form action={async (formData) => {
-                            await createPost(formData);
-                            setMainOpen(false);
-                            setContent("");
-                            setSelectedLocation(null);
-                            setPhotoPreview(null);
-                            if (photoInputRef.current) {
-                                photoInputRef.current.value = "";
-                            }
-                        }} >
+                        <form onSubmit={handlePostSubmit} >
                             <div className="flex gap-3 items-center mb-4">
-                                <Avatar className="shrink-0">
-                                    <Image
-                                        src={image || FALLBACK_AVATAR}
-                                        width={40}
-                                        height={40}
-                                        className="rounded-full"
-                                        alt="User"
-                                    />
+                                <Avatar className="w-12 h-12 rounded-full overflow-hidden">
+                                    <AvatarImage src={image || FALLBACK_AVATAR} className="object-cover w-full h-full" width={48} height={48} />
+                                    <AvatarFallback>Image</AvatarFallback>
                                 </Avatar>
                                 <div className="flex flex-col justify-between h-12 min-w-0 flex-1">
                                     <span className=" text-sm leading-tight truncate font-medium">{session?.user.name}</span>
@@ -245,10 +279,17 @@ export default function Post({ image }: { image: string|null|undefined }) {
                             <div className="mt-4 flex justify-start space-x-2">
                                 <button
                                     className={`px-4 py-2 w-full bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:bg-gray-500`}
-                                    disabled={!content.trim()}
+                                    disabled={!content.trim() || isPosting}
                                     type="submit"
                                 >
-                                    Post
+                                    {isPosting ? (
+                                        <>
+                                            <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4"></span>
+                                            Posting...
+                                        </>
+                                    ) : (
+                                        "Post"
+                                    )}
                                 </button>
                             </div>
                         </form>

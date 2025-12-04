@@ -1,11 +1,10 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-
 import { prisma } from "@/lib/prisma";
-import {type UploadPhotoResult, uploadPhotoToS3 } from "@/lib/cloudFunctions";
+import { type UploadPhotoResult, uploadPhotoToS3 } from "@/lib/cloudFunctions";
 import { headers } from "next/headers";
-
+import 'dotenv';
 
 export async function createPost(formData: FormData) {
     const session = await auth.api.getSession({
@@ -17,7 +16,7 @@ export async function createPost(formData: FormData) {
     const userId = session.user.id;
     const privacyRaw = formData.get("privacy-choice");
     console.log(privacyRaw)
-    const privacy= privacyRaw==="private"?"PRIVATE":privacyRaw==="friends"?"FRIENDS_ONLY":"PUBLIC";
+    const privacy = privacyRaw === "private" ? "PRIVATE" : privacyRaw === "friends" ? "FRIENDS_ONLY" : "PUBLIC";
 
     const contentRaw = formData.get("post-text");
     const content =
@@ -34,37 +33,37 @@ export async function createPost(formData: FormData) {
     // 3. Enforce “at least one of content or image”
     const hasImage = file && file.size > 0;
     if (!content && !hasImage) {
-    throw new Error("Post must have either text or image.");
+        throw new Error("Post must have either text or image.");
     }
     let imageUrl: string | null = null;
-    if(hasImage && file){
-        const uploaded:UploadPhotoResult = await uploadPhotoToS3(file);
-        if(!uploaded.success){
+    if (hasImage && file) {
+        const uploaded: UploadPhotoResult = await uploadPhotoToS3(file);
+        if (!uploaded.success) {
             console.error("Image upload failed:", uploaded.error);
-      throw new Error(uploaded.error || "Failed to upload image");
+            throw new Error(uploaded.error || "Failed to upload image");
         }
-        imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.ap-south-1.amazonaws.com/${uploaded.fileName}`;
+        imageUrl = `${process.env.CLOUDFRONT_DOMAIN}/${uploaded.fileName}`;
     }
 
-    let fullLocation :any = null;
-    if(locationPresent ||latStr ||lonStr){
-        fullLocation={
-            name:typeof locationName==="string"?locationName:null,
-            lat:latStr,
-            lon:lonStr,
+    let fullLocation: any = null;
+    if (locationPresent || latStr || lonStr) {
+        fullLocation = {
+            name: typeof locationName === "string" ? locationName : null,
+            lat: latStr,
+            lon: lonStr,
         };
     }
 
     //Create the post in DB
- 
+
     const post = await prisma.post.create({
-        data:{
-            authorId:userId,
+        data: {
+            authorId: userId,
             content,
             imageUrl,
             fullLocation,
             privacy,
         }
     });
-    return post;
-  }
+    return !!post;
+}

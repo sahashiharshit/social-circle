@@ -67,7 +67,7 @@ export default function PrivacySelect({
                 onChange(opt.value);
                 setOpen(false);
               }}
-              className="cursor-pointer px-2 py-1 flex items-center gap-2 hover:bg-gray-700/50"
+              className="cursor-pointer px-2 py-1 text-white flex items-center gap-2 hover:bg-gray-700/50"
             >
               {opt.icon}
               {opt.label}
