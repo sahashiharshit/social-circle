@@ -161,7 +161,7 @@ export default function ProfileGallery() {
         return () => window.removeEventListener("keydown", handler);
     });
     const isInitialSkeletonVisible =
-        !initialLoaded && items.length === 0 && loading;
+       (loading && items.length === 0) || !initialLoaded;
     return (
         <div className="space-y-8">
             {/* Header + filters */}

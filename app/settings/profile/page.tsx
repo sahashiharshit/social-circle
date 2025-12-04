@@ -17,6 +17,7 @@ export default async function ProfileMediaSettingsPage() {
   
   return (
     <div className="max-w-6xl">
+      
       <ProfileGallery />
     </div>
   );
