@@ -1,10 +1,9 @@
-import SettingsLayoutSkeleton from "@/components/skeletons/SettingsSkeleton";
+
 
 
 export default function SettingsPage(){
     return(
       <>
-     
       <div>
       <h2 className="text-xl font-semibold mb-4">Settings Overview</h2>
       <p className="opacity-75">

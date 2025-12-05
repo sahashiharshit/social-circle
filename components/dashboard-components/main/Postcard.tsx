@@ -65,7 +65,7 @@ export default function PostCard({
 
       {/* ---------- CONTENT ---------- */}
       <CardContent className="space-y-3">
-        {/* Text content */}
+       
         {isOptimistic ? (
           <div className="space-y-2">
             <div className="h-3 bg-gray-300 rounded animate-pulse w-3/4" />
@@ -75,7 +75,7 @@ export default function PostCard({
           post.content && <p>{post.content}</p>
         )}
 
-        {/* Image content */}
+        
         {post.imageUrl && (
           <div className="rounded-md overflow-hidden">
             {isOptimistic ? (
@@ -125,7 +125,7 @@ export default function PostCard({
         )}
       </CardFooter>
 
-      {/* Comments */}
+     
       {openComments && !isOptimistic && (
         <div className="px-4 pb-3">
           <CommentSection postId={post.id} />

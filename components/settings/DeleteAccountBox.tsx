@@ -14,7 +14,7 @@ export function DeleteAccountBox() {
         Deleting your account is permanent and cannot be undone.
       </p>
 
-      {/* Delete button */}
+      
       {!confirmVisible && (
         <button
           type="button"
@@ -25,7 +25,7 @@ export function DeleteAccountBox() {
         </button>
       )}
 
-      {/* Confirmation UI */}
+     
       {confirmVisible && (
         <div className="space-y-3 animate-in fade-in">
           <p className="text-xs opacity-80">

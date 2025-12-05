@@ -13,9 +13,7 @@ export async function proxy(request:NextRequest){
         url.searchParams.set("redirectTo",pathname);
         return NextResponse.redirect(url);
     }
-    // const session = await auth.api.getSession({
-    //     headers: await headers()
-    // })
+    
     return NextResponse.next();
 }
 export const config={

@@ -7,25 +7,11 @@ import { IoArrowBack, IoCloseCircle, IoRemoveCircle } from "react-icons/io5";
 import { createPost } from "@/app/actions/post";
 import { compressImage } from "@/lib/compressImage";
 import { useSession } from "@/context/SessionContext";
-
-
 import PrivacySelect, { PrivacyValue } from "@/components/dashboard-components/main/PrivacySelect";
 import { FALLBACK_AVATAR } from "@/lib/fallbackImage";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-
-
-
-export type SelectedPhoto = {
-    file: File;
-    previewUrl: string;
-};
-export type Location = {
-    name: string;
-    lat: string;
-    lon: string;
-};
+import { Location, SelectedPhoto } from "@/types/Post";
 
 
 function MainModal({ isOpen, onClose, children }: { isOpen: boolean, onClose: () => void, children: React.ReactNode }) {
@@ -54,7 +40,7 @@ export default function Post({ image }: { image: string | null | undefined }) {
     const [loading, setLoading] = useState(false);
     const [privacy, setPrivacy] = useState<PrivacyValue>("public");
     const [isPosting, setIsPosting] = useState(false);
-    const [optimisticPost, setOptimisticPost] = useState<any | null>(null);
+    
     const photoInputRef = useRef<HTMLInputElement | null>(null);
     const router = useRouter();
     const session = useSession();

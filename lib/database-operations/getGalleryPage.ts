@@ -1,10 +1,7 @@
-// adjust import path if needed
+
 
 import { prisma } from "@/lib/prisma";
 import { PostPrivacy } from "@/lib/generated/prisma/enums";
-
-
-
 
 export type GalleryScope = "all" | "mine" | "friends";
 const sortMap = {
@@ -26,7 +23,7 @@ export async function getGalleryPage(
     const { cursor, sort = "NEWEST", scope = "all" } = opts;
     const sortKey: "NEWEST" | "OLDEST" = opts.sort ?? "NEWEST";
 
-    // 1. Build list of friend IDs
+
     const friendships = await prisma.friendship.findMany({
         where: {
             OR: [
@@ -40,12 +37,12 @@ export async function getGalleryPage(
         f.requesterId === userId ? f.addresseeId : f.requesterId
     );
 
-    // 2. Base where clause: must be an image post
+ 
     const whereBase: any = {
         imageUrl: { not: null },
     };
 
-    // 3. Scope filter (mine / friends / all)
+ 
     if (scope === "mine") {
         whereBase.authorId = userId;
     } else if (scope === "friends") {
@@ -57,10 +54,7 @@ export async function getGalleryPage(
         ];
     }
 
-    // 4. Privacy rules
-    // - Your own posts: always visible
-    // - Friends' posts: PUBLIC or FRIENDS_ONLY
-    // - (For now, we don't show non-friend posts anyway)
+    
     whereBase.AND = [
         {
             OR: [
@@ -80,7 +74,7 @@ export async function getGalleryPage(
     const orderBy = {
         createdAt: sortMap[sortKey],
     };
-    const take = PAGE_SIZE + 1; // fetch one extra to detect nextCursor
+    const take = PAGE_SIZE + 1;
 
     const posts = await prisma.post.findMany({
         where: whereBase,

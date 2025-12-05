@@ -1,27 +1,9 @@
 "use client";
 
+import { ApiResponse, GalleryItem, GalleryScope, GallerySort } from "@/types/Profile";
 import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 
-type GallerySort = "NEWEST" | "OLDEST";
-type GalleryScope = "all" | "mine" | "friends";
 
-type Author = {
-    id: string;
-    name: string | null;
-    image: string | null;
-};
-
-type GalleryItem = {
-    id: string;
-    imageUrl: string;
-    createdAt: string;
-    author: Author;
-};
-
-type ApiResponse = {
-    items: GalleryItem[];
-    nextCursor: string | null;
-};
 
 function formatMonthYear(dateStr: string) {
     const d = new Date(dateStr);
@@ -49,7 +31,7 @@ export default function ProfileGallery() {
 
     const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-    // Fetch page
+    
     const fetchPage = useCallback(
         async (opts?: { cursor?: string | null; reset?: boolean }) => {
             if (loading) return;
@@ -75,7 +57,7 @@ export default function ProfileGallery() {
                     setItems((prev) => [...prev, ...data.items]);
                 }
                 setNextCursor(data.nextCursor);
-                
+
             } catch (err: any) {
                 setError(err.message ?? "Failed to load gallery");
             } finally {
@@ -85,7 +67,7 @@ export default function ProfileGallery() {
         [sort, scope]
     );
 
-    // Initial + when filters change
+
     useEffect(() => {
         setItems([]);
         setNextCursor(null);
@@ -93,7 +75,7 @@ export default function ProfileGallery() {
         fetchPage({ reset: true });
     }, [sort, scope, fetchPage]);
 
-    // Infinite scroll
+
     useEffect(() => {
         if (!sentinelRef.current) return;
         if (!initialLoaded) return;
@@ -119,7 +101,7 @@ export default function ProfileGallery() {
         };
     }, [nextCursor, loading, initialLoaded, fetchPage]);
 
-    // Group by month/year
+
     const grouped = useMemo(() => {
         const map = new Map<string, GalleryItem[]>();
         for (const item of items) {
@@ -127,10 +109,10 @@ export default function ProfileGallery() {
             if (!map.has(key)) map.set(key, []);
             map.get(key)!.push(item);
         }
-        return Array.from(map.entries()); // [ [ "December 2025", [..] ], ... ]
+        return Array.from(map.entries());
     }, [items]);
 
-    // Lightbox helpers
+
     const openLightbox = (index: number) => setLightboxIndex(index);
     const closeLightbox = () => setLightboxIndex(null);
 
@@ -150,7 +132,7 @@ export default function ProfileGallery() {
         );
     };
 
-    // Close on ESC
+
     useEffect(() => {
         const handler = (e: KeyboardEvent) => {
             if (e.key === "Escape") closeLightbox();
@@ -161,10 +143,10 @@ export default function ProfileGallery() {
         return () => window.removeEventListener("keydown", handler);
     });
     const isInitialSkeletonVisible =
-       (loading && items.length === 0) || !initialLoaded;
+        (loading && items.length === 0) || !initialLoaded;
     return (
         <div className="space-y-8">
-            {/* Header + filters */}
+
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <h2 className="text-xl font-semibold mb-1">Media Gallery</h2>
@@ -195,7 +177,7 @@ export default function ProfileGallery() {
                 </div>
             </div>
 
-            {/* Content */}
+
             {error && (
                 <p className="text-sm text-red-500">
                     {error} – try refreshing the page.
@@ -203,7 +185,7 @@ export default function ProfileGallery() {
             )}
 
 
-            {/* Initial skeletons */}
+
             {isInitialSkeletonVisible && (
                 <div className="space-y-8">
                     <section className="space-y-3">
@@ -223,7 +205,7 @@ export default function ProfileGallery() {
                 </p>
             )}
 
-            {/* Grouped by month/year */}
+
             <div className="space-y-8">
                 {grouped.map(([label, groupItems]) => (
                     <section key={label} className="space-y-3">
@@ -240,7 +222,7 @@ export default function ProfileGallery() {
                                         className="group relative aspect-square overflow-hidden rounded-md bg-accent shadow-sm"
                                         onClick={() => openLightbox(globalIndex)}
                                     >
-                                        {/* Lazy load + simple blur effect */}
+
                                         <img
                                             src={item.imageUrl}
                                             alt={item.author?.name ?? "Photo"}
@@ -248,10 +230,10 @@ export default function ProfileGallery() {
                                             className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 blur-[2px] group-hover:blur-0"
                                         />
 
-                                        {/* Overlay: who posted */}
+
                                         <div className="absolute inset-x-0 bottom-0 p-2 bg-linear-to-t from-black/60 to-transparent text-xs text-white flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                             {item.author?.image && (
-                                                // eslint-disable-next-line @next/next/no-img-element
+
                                                 <img
                                                     src={item.author.image}
                                                     alt={item.author.name ?? "User"}
@@ -270,7 +252,7 @@ export default function ProfileGallery() {
                 ))}
             </div>
 
-            {/* Infinite scroll sentinel */}
+
             <div ref={sentinelRef} className="h-8 flex items-center justify-center">
                 {loading && items.length > 0 && (
                     <div className="grid grid-cols-4 gap-2 w-full max-w-xl">
@@ -284,7 +266,7 @@ export default function ProfileGallery() {
                 )}
             </div>
 
-            {/* Lightbox */}
+
             {lightboxIndex !== null && items[lightboxIndex] && (
                 <div
                     className="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-center"
@@ -294,7 +276,7 @@ export default function ProfileGallery() {
                         className="relative max-w-5xl max-h-[80vh] w-full px-4"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Close button */}
+
                         <button
                             onClick={closeLightbox}
                             className="absolute -top-10 right-0 text-white text-sm opacity-70 hover:opacity-100"
@@ -302,7 +284,7 @@ export default function ProfileGallery() {
                             Close ✕
                         </button>
 
-                        {/* Image */}
+
                         <div className="w-full max-h-[70vh] flex items-center justify-center">
                             <img
                                 src={items[lightboxIndex].imageUrl}
@@ -311,7 +293,7 @@ export default function ProfileGallery() {
                             />
                         </div>
 
-                        {/* Meta */}
+
                         <div className="mt-3 flex items-center justify-between text-xs text-white/80">
                             <div className="flex items-center gap-2">
                                 {items[lightboxIndex].author?.image && (

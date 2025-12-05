@@ -8,10 +8,9 @@ export default function ThemeToggle() {
 const [mounted, setMounted] = useState(false);
 useEffect(() => setMounted(true), []);
 if (!mounted) {
-    // You can also return a skeleton icon instead
     return (
       <button className="p-2 rounded-lg opacity-0 cursor-default">
-        {/* placeholder to avoid layout shift */}
+       
       </button>
     );
   }

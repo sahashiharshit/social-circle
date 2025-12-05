@@ -1,17 +1,11 @@
 "use server"
 import { auth } from "@/lib/auth"
+import { Errors, FormState } from "@/types/Auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 
-export type Errors = {
-  email?: string,
-  password?: string
 
-}
-export type FormState = {
-  errors: Errors
-}
 
 export async function login(prevState: FormState, formData: FormData): Promise<FormState> {
   const errors: Errors = {}
@@ -23,8 +17,8 @@ export async function login(prevState: FormState, formData: FormData): Promise<F
   if (!password) {
     errors.password = "Password is required"
   }
-  if(Object.keys(errors).length>0){
-    return {errors};
+  if (Object.keys(errors).length > 0) {
+    return { errors };
   }
   await auth.api.signInEmail({
     body: {
@@ -43,7 +37,7 @@ export async function signup(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirmPassword") as string;
-  // Server-side validation
+  
   if (!name || !email || !password || !confirmPassword) {
     throw new Error("All fields are required");
   }
@@ -77,16 +71,16 @@ export async function logout() {
   redirect('/');
 
 }
-export async function socialProvider(){
- const {redirect:redirectUrl,url}=await auth.api.signInSocial({
- body:{
-  provider:"google",
-  callbackURL:"/dashboard",
- }
+export async function socialProvider() {
+  const { redirect: redirectUrl, url } = await auth.api.signInSocial({
+    body: {
+      provider: "google",
+      callbackURL: "/dashboard",
+    }
 
- });
- if(redirectUrl){
-redirect(url!);
- }
- 
+  });
+  if (redirectUrl) {
+    redirect(url!);
+  }
+
 }

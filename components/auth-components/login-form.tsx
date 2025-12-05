@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -12,9 +11,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { login, socialProvider } from "@/app/actions/auth-actions"
 import { useActionState, useState } from "react"
-import { FormState } from "@/app/actions/auth-actions"
+import { FormState } from "@/types/Auth"
 import Link from "next/link"
 import { toast } from "sonner"
+
 export function LoginForm({
   className,
   ...props
@@ -84,8 +84,6 @@ export function LoginForm({
               ></span>
             </span>
           )}
-
-          {/* Text (hidden when loading) */}
           <span className={googleLoading ? "opacity-0" : "opacity-100"}>
             Log in with Google
           </span>

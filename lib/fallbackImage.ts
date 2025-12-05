@@ -1,1 +1,3 @@
-export const FALLBACK_AVATAR='https://social-circle-image-bucket.s3.ap-south-1.amazonaws.com/defaultImage/useravatar.png';
+import 'dotenv';
+const cloudfronturl = process.env.CLOUDFRONT_DOMAIN;
+export const FALLBACK_AVATAR=`${cloudfronturl}/defaultImage/useravatar.png`;

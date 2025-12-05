@@ -15,7 +15,7 @@ export default async function FeedStream() {
 
   return (
     <>
-      {/* STREAM POSTS INDIVIDUALLY */}
+      
       <div className="space-y-4">
         {posts.map( (post) => (
           <Suspense key={post.id} fallback={<FeedSkeleton />}>
@@ -24,7 +24,7 @@ export default async function FeedStream() {
         ))}
       </div>
 
-      {/* Pass nextCursor to Feed client component for infinite scroll */}
+    
       <Feed initialCursor={nextCursor}  />
     </>
   );

@@ -2,7 +2,7 @@
 import { logout } from "@/app/actions/auth-actions";
 import Link from "next/link";
 import { useState } from "react";
-export default function UserDropdown({ user }: { user: any }) {
+export default function UserDropdown() {
     const [open, setOpen] = useState(false);
     return (
         <div className="relative">
@@ -13,8 +13,6 @@ export default function UserDropdown({ user }: { user: any }) {
             </button>
             {open && (
                 <div className="absolute right-0 mt-2 w-48 bg-background border rounded-lg shadow-lg py-1">
-
-
                     <Link
                         href="/settings"
                         className="block px-4 py-2 text-sm hover:bg-accent"

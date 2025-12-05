@@ -18,12 +18,8 @@ import { Input } from "@/components/ui/input"
 import { signup, socialProvider } from "@/app/actions/auth-actions"
 import { useState } from 'react'
 import { toast } from 'sonner'
-type SignupValues = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+import { SignupValues } from '@/types/Auth'
+
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [googleLoading, setGoogleLoading] = useState(false);
   const { register, handleSubmit, watch, formState: { errors, isSubmitting }, } = useForm<SignupValues>();
@@ -35,10 +31,8 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     });
     try {
       await signup(formData);
-
-
     } catch (error: any) {
-
+      toast.error("Error in Signup")
     }
   }
   async function handleGoogleLogin() {
@@ -49,7 +43,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       toast.error("Google login failed")
       setGoogleLoading(false);
     }
-
   }
   return (
     <Card {...props}>
@@ -67,8 +60,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           {errors.name && (
             <span className="text-red-600">{errors.name.message}</span>
           )}
-
-
           <Input
 
             id="email"
@@ -86,8 +77,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           {errors.email && (
             <span className="text-red-600">{errors.email.message}</span>
           )}
-
-
           <Input id="password" type="password" placeholder='Password' {...register("password", {
             required: "Password is required",
             minLength: {
@@ -100,8 +89,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           {errors.password && (
             <span className="text-red-600">{errors.password.message}</span>
           )}
-
-
           <Input id="confirm-password" type="password" placeholder='Confirm Password' {...register("confirmPassword", {
             required: "Please confirm your password",
             validate: (value) =>
@@ -120,8 +107,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 <span className="mx-2 text-gray-500">OR</span>
                 <span className="border-t w-full"></span>
               </div>
-
-
             </Field>
           </FieldGroup>
 
@@ -142,7 +127,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 </span>
               )}
 
-              {/* Text (hidden when loading) */}
+            
               <span className={googleLoading ? "opacity-0" : "opacity-100"}>
                 Log in with Google
               </span>

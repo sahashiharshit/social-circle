@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 
 export async function POST(req: NextRequest) {
   const session = await auth.api.getSession({
-    headers:await headers()
+    headers: await headers()
   });
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid target" }, { status: 400 });
   }
 
-  // Check existing relation
+  
   const existing = await prisma.friendship.findFirst({
     where: {
       OR: [

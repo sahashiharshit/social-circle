@@ -27,12 +27,12 @@ export async function changePassword(formData: FormData) {
         throw new Error("Passwords do not match");
     }
 
-    // Better Auth handles verifying current password and updating the Account
+    
     await auth.api.changePassword({
         body: {
             currentPassword,
             newPassword,
-            revokeOtherSessions: true, // logs out from other devices :contentReference[oaicite:0]{index=0}
+            revokeOtherSessions: true, 
         },
         headers: await headers(),
     });
@@ -60,7 +60,7 @@ export async function deleteAccount(formData: FormData) {
     await auth.api.signOut({
         headers: await headers(),
     });
-    // Grab user image + their post images before we delete records
+  
     const [userRecord, postsWithImages] = await Promise.all([
         prisma.user.findUnique({
             where: { id: userId },
@@ -72,9 +72,9 @@ export async function deleteAccount(formData: FormData) {
         }),
     ]);
 
-    // Main DB cleanup in a transaction
+    
     await prisma.$transaction(async (tx) => {
-        // 1) Find all accepted friendships involving this user
+        
         const acceptedRequests = await tx.friendship.findMany({
             where: {
                 OR: [
@@ -96,14 +96,13 @@ export async function deleteAccount(formData: FormData) {
             });
         }
 
-        // 2) Delete the user.
-
+       
         await tx.user.delete({
             where: { id: userId },
         });
     });
 
-    // 3) Delete profile image from S3 (if any)
+    
     if (userRecord?.image) {
         const key = keyFromImageUrl(userRecord.image);
         if (key) {
@@ -111,7 +110,7 @@ export async function deleteAccount(formData: FormData) {
         }
     }
 
-    // 4) Delete all post images from S3
+   
     for (const post of postsWithImages) {
         if (!post.imageUrl) continue;
         const key = keyFromImageUrl(post.imageUrl);
@@ -123,6 +122,8 @@ export async function deleteAccount(formData: FormData) {
 
     redirect("/");
 }
+
+//.............update Profile Image.............
 export async function updateProfileImage(formData: FormData) {
     "use server";
     const currentSession = await auth.api.getSession({
@@ -134,7 +135,7 @@ export async function updateProfileImage(formData: FormData) {
     }
     const file = formData.get("image") as File | null;
     if (!file || file.size === 0) {
-        // nothing to upload
+      
         return;
     }
     const userRecord = await prisma.user.findUnique({
@@ -144,13 +145,13 @@ export async function updateProfileImage(formData: FormData) {
     if (!userRecord) return;
 
     const oldImageUrl = userRecord.image ?? null;
-    // 1. Upload new image
+    
     const { url: newUrl, fileName: key } = await uploadProfileImageToS3(
         file,
         userRecord.id
     );
 
-    // 2. Update DB, rollback upload if update fails
+ 
     try {
         await prisma.user.update({
             where: { id: userRecord.id },
@@ -159,11 +160,11 @@ export async function updateProfileImage(formData: FormData) {
             },
         });
     } catch (err) {
-        // DB update failed – remove the new image to avoid orphan
+       
         await deleteFromS3(key).catch(() => { });
         throw err;
     }
-    // 3. Delete old profile image from S3 (if any)
+    
     if (oldImageUrl) {
         const oldKey = keyFromImageUrl(oldImageUrl);
         if (oldKey) {

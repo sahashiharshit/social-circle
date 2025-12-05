@@ -6,24 +6,24 @@ import { headers } from "next/headers";
 export async function POST(req: Request) {
   try {
     const session = await auth.api.getSession({
-      headers:await headers()
+      headers: await headers()
     });
     const user = session?.user;
 
     if (!user) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const result =await prisma.user.findUnique({
-      where:{
-        id:user.id
+    const result = await prisma.user.findUnique({
+      where: {
+        id: user.id
       },
 
     });
     const imageUrl = result?.image;
-    if(imageUrl){
+    if (imageUrl) {
 
     }
-    
+
     const formData = await req.formData();
     const file = formData.get("image") as File | null;
 
@@ -34,19 +34,18 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // For now, save locally inside /public/uploads
-    // (You can later switch to Cloudflare R2 / AWS S3 / UploadThing)
+
     const filename = `${user.id}-${Date.now()}-${file.name}`;
     const filepath = `./public/uploads/${filename}`;
 
 
-    
+
 
     await import("fs").then(fs =>
       fs.writeFileSync(filepath, buffer)
     );
 
-    // Update user profile image in DB
+
     await prisma.user.update({
       where: { id: user.id },
       data: {

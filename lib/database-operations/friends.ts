@@ -31,7 +31,7 @@ export async function getFriendSuggestions(userId: string) {
         }
 
     });
-    // Extract blocked IDs (already connected in any way)
+   
     const excludedIds = new Set<string>();
 
     excludedIds.add(userId); // exclude myself
@@ -39,7 +39,7 @@ export async function getFriendSuggestions(userId: string) {
         excludedIds.add(r.requesterId);
         excludedIds.add(r.addresseeId);
     })
-    // Suggest users not connected to us
+  
     const suggestions = await prisma.user.findMany({
         where: {
             id: {

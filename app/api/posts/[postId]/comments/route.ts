@@ -3,14 +3,11 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 
-
-
-
 export async function POST(req: NextRequest,
-  { params }: { params: Promise<{ postId: string }>}) {
+  { params }: { params: Promise<{ postId: string }> }) {
   const session = await auth.api.getSession(
     {
-      headers:await headers()
+      headers: await headers()
     }
   );
   const user = session?.user;
@@ -34,7 +31,7 @@ export async function POST(req: NextRequest,
   }
 
   if (parentId) {
-    // Ensure parent comment belongs to same post
+
     const parent = await prisma.comment.findUnique({
       where: { id: parentId },
       select: { postId: true },
@@ -44,68 +41,68 @@ export async function POST(req: NextRequest,
       return new NextResponse("Invalid parent comment", { status: 400 });
     }
   }
-try{
-  const comment = await prisma.$transaction(async (tx) => {
-    const created = await tx.comment.create({
-      data: {
-        postId,
-        authorId: user.id,
-        content,
-        ...(parentId
-          ?{parentId}
-        :{}),
-      },
-      include: {
-        author: {
-          select: { id: true, name: true, image: true },
+  try {
+    const comment = await prisma.$transaction(async (tx) => {
+      const created = await tx.comment.create({
+        data: {
+          postId,
+          authorId: user.id,
+          content,
+          ...(parentId
+            ? { parentId }
+            : {}),
         },
-      },
-    });
-
-    // increment commentCount on post
-    await tx.post.update({
-      where: { id: postId },
-      data: { commentCount: { increment: 1 } },
-    });
-
-    return created;
-  });
-
-  return NextResponse.json(comment);
-}catch(err){
-  return new NextResponse("Internal Server Error",{status:500})
-}
-}
-
-export async function GET(req: NextRequest,
-  { params }: { params: Promise<{ postId: string }>}) {
-  const  postId  = (await params).postId;
-
-try{
-  const comments = await prisma.comment.findMany({
-    where: {
-      postId,
-      //parentId: null,
-    },
-    include: {
-      author: {
-        select: { id: true, name: true, image: true },
-      },
-      replies: {
         include: {
           author: {
             select: { id: true, name: true, image: true },
           },
         },
-        orderBy: { createdAt: "asc" },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+      });
 
-  return NextResponse.json(comments);
+
+      await tx.post.update({
+        where: { id: postId },
+        data: { commentCount: { increment: 1 } },
+      });
+
+      return created;
+    });
+
+    return NextResponse.json(comment);
+  } catch (err) {
+    return new NextResponse("Internal Server Error", { status: 500 })
+  }
 }
-catch (err) {
+
+export async function GET(req: NextRequest,
+  { params }: { params: Promise<{ postId: string }> }) {
+  const postId = (await params).postId;
+
+  try {
+    const comments = await prisma.comment.findMany({
+      where: {
+        postId,
+
+      },
+      include: {
+        author: {
+          select: { id: true, name: true, image: true },
+        },
+        replies: {
+          include: {
+            author: {
+              select: { id: true, name: true, image: true },
+            },
+          },
+          orderBy: { createdAt: "asc" },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return NextResponse.json(comments);
+  }
+  catch (err) {
     console.log(err);
     return new NextResponse("Internal Server Error", { status: 500 });
   }

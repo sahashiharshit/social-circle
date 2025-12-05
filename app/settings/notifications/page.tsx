@@ -1,4 +1,4 @@
-// app/settings/notifications/page.tsx
+
 export default function NotificationSettingsPage() {
   return (
     <div className="max-w-xl space-y-8">
@@ -42,7 +42,6 @@ export default function NotificationSettingsPage() {
           </label>
         </div>
       </section>
-
       <button
         type="submit"
         className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"

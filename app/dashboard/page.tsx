@@ -1,15 +1,12 @@
 import MainContent from "@/components/dashboard-components/main/MainComponent";
 import DashboardSidebar from "@/components/dashboard-components/sidebar/DashboardSidebar";
 import DashboardSkeleton from "@/components/skeletons/DashboardSkeleton";
-
 import { auth } from "@/lib/auth";
 import { getFriends, getFriendSuggestions, getIncomingFriendRequests } from "@/lib/database-operations/friends";
 import { FullSession, User } from "@/types/Session";
-
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-
 
 export default async function DashboardPage() {
     const session: FullSession = await auth.api.getSession({

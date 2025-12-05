@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import PostCard from "@/components/dashboard-components/main/Postcard";
 
 import type { FeedPost, FeedResponse } from "@/types/Post";
+import { toast } from "sonner";
 
 export default function Feed({
     initialCursor
@@ -32,7 +33,8 @@ export default function Feed({
         const res = await fetch(`/api/feed?cursor=${cursor}&limit=20`);
         if (!res.ok) {
             setLoading(false);
-            return; // you might want toast/error here
+            toast.error('Unable to load more.')
+            return; 
         }
         const data: FeedResponse = await res.json();
         if (!data.posts.length) {
@@ -46,7 +48,7 @@ export default function Feed({
         setLoading(false);
     }
 
-    // Infinite scroll listener
+    
     useEffect(() => {
         function onScroll() {
             if (

@@ -18,3 +18,13 @@ export type FeedResponse = {
     posts: FeedPost[];
     nextCursor: string | null;
 };
+
+export type SelectedPhoto = {
+    file: File;
+    previewUrl: string;
+};
+export type Location = {
+    name: string;
+    lat: string;
+    lon: string;
+};

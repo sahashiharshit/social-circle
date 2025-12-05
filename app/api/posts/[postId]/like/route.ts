@@ -5,10 +5,10 @@ import { headers } from "next/headers";
 
 
 
-export async function POST(request:NextRequest,{params}:{params:Promise<{postId:string}>}) {
- 
+export async function POST(request: NextRequest, { params }: { params: Promise<{ postId: string }> }) {
+
   const session = await auth.api.getSession({
-    headers:await headers()
+    headers: await headers()
   });
   if (!session) return new NextResponse("Unauthorized", { status: 401 });
   const user = session?.user;
@@ -18,7 +18,7 @@ export async function POST(request:NextRequest,{params}:{params:Promise<{postId:
   }
 
   const postId = (await params).postId;
- 
+
   const existingLike = await prisma.postLike.findUnique({
     where: {
       postId_userId: {
@@ -28,24 +28,24 @@ export async function POST(request:NextRequest,{params}:{params:Promise<{postId:
     },
   });
 
-  
+
   if (existingLike) {
-    const [,updatedPost] = await prisma.$transaction([
+    const [, updatedPost] = await prisma.$transaction([
       prisma.postLike.delete({
         where: { id: existingLike.id },
       }),
       prisma.post.update({
         where: { id: postId },
         data: { likeCount: { decrement: 1 } },
-        select:{likeCount:true},
+        select: { likeCount: true },
       }),
     ]);
 
-    return NextResponse.json({ liked: false,likeCount:updatedPost.likeCount });
+    return NextResponse.json({ liked: false, likeCount: updatedPost.likeCount });
   }
 
-  // Otherwise, create like
-  const[,updatedPost]= await prisma.$transaction([
+
+  const [, updatedPost] = await prisma.$transaction([
     prisma.postLike.create({
       data: {
         postId,
@@ -55,9 +55,9 @@ export async function POST(request:NextRequest,{params}:{params:Promise<{postId:
     prisma.post.update({
       where: { id: postId },
       data: { likeCount: { increment: 1 } },
-      select:{likeCount:true}
+      select: { likeCount: true }
     }),
   ]);
 
-  return NextResponse.json({ liked: true,likeCount:updatedPost.likeCount });
+  return NextResponse.json({ liked: true, likeCount: updatedPost.likeCount });
 }

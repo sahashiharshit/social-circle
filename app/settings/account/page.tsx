@@ -2,17 +2,14 @@
 import { changePassword, updateProfileImage } from "@/app/actions/account";
 import { DeleteAccountBox } from "@/components/settings/DeleteAccountBox";
 import { auth } from "@/lib/auth";
-
 import { FALLBACK_AVATAR } from "@/lib/fallbackImage";
 import { prisma } from "@/lib/prisma";
-
 import { headers } from "next/headers";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
 
 export default async function AccountSettingsPage() {
-
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -33,8 +30,6 @@ export default async function AccountSettingsPage() {
     redirect("/signup?redirectTo=/settings/account");
   }
  
-
- 
   return (
    
     <div className="max-w-xl space-y-8">
@@ -45,14 +40,12 @@ export default async function AccountSettingsPage() {
         </p>
       </section>
 
-      {/* PROFILE IMAGE UPDATE (server action form) */}
       <section className="space-y-3 border rounded-lg p-4 bg-background/70">
         <h3 className="font-medium text-sm">Profile Image</h3>
 
         <form
           className="space-y-4"
           action={updateProfileImage}
-
         >
           <div className="flex items-center gap-4">
             <div className="w-20 h-20 rounded-full bg-accent overflow-hidden flex items-center justify-center">
@@ -87,7 +80,7 @@ export default async function AccountSettingsPage() {
         </form>
       </section>
 
-      {/* PASSWORD SECTION (still UI-only, backend to be wired if you want) */}
+    
       <section className="space-y-3 border rounded-lg p-4 bg-background/70">
         <h3 className="font-medium text-sm">Change password</h3>
         <form className="space-y-3"action={changePassword}>

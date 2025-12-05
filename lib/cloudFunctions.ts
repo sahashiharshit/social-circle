@@ -25,7 +25,7 @@ export async function uploadPhotoToS3(file: File): Promise<UploadPhotoResult> {
         const buffer = Buffer.from(arrayBuffer);
         const ext = file.name.split(".").pop() || "jpg";
         const key = `posts/${crypto.randomUUID()}.${ext}`;
-        // Define upload parameters
+       
         const params = {
             Bucket: BUCKET_NAME,
             Key: key,
@@ -36,7 +36,7 @@ export async function uploadPhotoToS3(file: File): Promise<UploadPhotoResult> {
         const command = new PutObjectCommand(params);
         await s3Client.send(command);
 
-        // Optional: Revalidate paths if needed
+        
         revalidatePath("/");
 
         return { success: true, fileName: key };

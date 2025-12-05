@@ -2,9 +2,6 @@
 
 import SettingsNavbarSkeleton from "@/components/skeletons/SettingsNavbarSkeleton";
 import SettingsSidebarSkeleton from "@/components/skeletons/SettingsSidebarSkeleton";
-
-
-
 export default function SettingsLayoutSkeleton() {
   return (
     <div className="flex flex-col h-screen bg-accent animate-pulse">

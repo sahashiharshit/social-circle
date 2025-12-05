@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request:NextRequest) {
-    const searchParams = request.nextUrl.searchParams;
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
 
-    const lat = searchParams.get("lat");
+  const lat = searchParams.get("lat");
   const lon = searchParams.get("lon");
-  if(!lat || !lon){
+  if (!lat || !lon) {
     return NextResponse.json([]);
   }
   const bbox = [
@@ -20,18 +20,18 @@ export async function GET(request:NextRequest) {
       headers: {
         "User-Agent": "SocialCircle/1.0",
       },
-      cache:"no-store"
+      cache: "no-store"
     }
   );
   if (!res.ok) {
-      console.warn("Nominatim nearby failed:", res.status);
-      return NextResponse.json([]);
-    }
+    console.warn("Nominatim nearby failed:", res.status);
+    return NextResponse.json([]);
+  }
   const data = await res.json();
- if (!Array.isArray(data)) {
-      console.warn("Nominatim returned object instead of array:", data);
-      return NextResponse.json([]);
-    }
+  if (!Array.isArray(data)) {
+    console.warn("Nominatim returned object instead of array:", data);
+    return NextResponse.json([]);
+  }
 
-    return NextResponse.json(data);
+  return NextResponse.json(data);
 }

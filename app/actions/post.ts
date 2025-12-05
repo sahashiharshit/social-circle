@@ -30,7 +30,7 @@ export async function createPost(formData: FormData) {
     const latStr = typeof lat === "string" && lat.trim() ? lat.trim() : null;
     const lonStr = typeof lon === "string" && lon.trim() ? lon.trim() : null;
     const file = formData.get("photo") as File | null;
-    // 3. Enforce “at least one of content or image”
+ 
     const hasImage = file && file.size > 0;
     if (!content && !hasImage) {
         throw new Error("Post must have either text or image.");
@@ -54,7 +54,7 @@ export async function createPost(formData: FormData) {
         };
     }
 
-    //Create the post in DB
+
 
     const post = await prisma.post.create({
         data: {

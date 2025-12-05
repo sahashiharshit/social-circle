@@ -1,4 +1,4 @@
-// app/settings/privacy/page.tsx
+
 export default function PrivacySettingsPage() {
   return (
     <div className="max-w-xl space-y-8">

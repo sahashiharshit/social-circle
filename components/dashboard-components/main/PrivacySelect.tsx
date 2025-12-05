@@ -1,13 +1,9 @@
 "use client";
+import { PrivacyOption, PrivacyValue } from "@/types/Privacy";
 import { useState, useRef, useEffect, JSX } from "react";
 import { FaGlobe, FaLock, FaUserFriends } from "react-icons/fa";
 
-export type PrivacyValue = "public" | "private" | "friends";
-type PrivacyOption = {
-  value: PrivacyValue;
-  label: string;
-  icon: JSX.Element;
-};
+
 const OPTIONS:PrivacyOption[] = [
   { value: "public", label: "Public", icon: <FaGlobe size={12} /> },
   { value: "private", label: "Private", icon: <FaLock size={12} /> },
@@ -26,7 +22,7 @@ export default function PrivacySelect({
   const [open, setOpen] = useState(false);
   const container = useRef<HTMLDivElement>(null);
 
-  // close dropdown on outside click
+ 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (container.current && !container.current.contains(e.target as Node)) {
@@ -41,10 +37,9 @@ export default function PrivacySelect({
 
   return (
     <div ref={container} className="relative w-[110px] text-xs">
-      {/* hidden input for server action */}
+    
       <input type="hidden" name={name} value={value} />
 
-      {/* Trigger */}
       <button
         type="button"
         className="w-full flex items-center justify-between bg-gray-800/50 text-white px-2 py-1 rounded-md border border-gray-600"
@@ -57,7 +52,7 @@ export default function PrivacySelect({
         <span className="text-gray-400">▾</span>
       </button>
 
-      {/* Dropdown */}
+      
       {open && (
         <div className="absolute left-0 right-0 mt-1 bg-gray-900 border border-gray-700 rounded-md shadow-lg z-20">
           {OPTIONS.map(opt => (
