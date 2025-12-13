@@ -30,6 +30,6 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts",
     "globals.d.ts"
-  ],
+, "next-sitemap.config.js"  ],
   "exclude": ["node_modules"]
 }

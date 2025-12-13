@@ -20,7 +20,7 @@ export default  function SettingsNavbar() {
             <div className="flex items-center space-x-2">
                 <div>{session?.user.name}</div>
                 <ThemeToggle />
-                <UserDropdown user={session?.user ?? null} />
+                <UserDropdown  />
             </div>
         </nav>
 

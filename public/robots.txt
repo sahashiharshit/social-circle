@@ -1,0 +1,13 @@
+# *
+User-agent: *
+Allow: /
+
+# Googlebot
+User-agent: Googlebot
+Disallow: /private
+
+# Host
+Host: https://social-circle-eight.vercel.app/
+
+# Sitemaps
+Sitemap: https://social-circle-eight.vercel.app/sitemap.xml

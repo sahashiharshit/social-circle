@@ -7,11 +7,12 @@ import { IoArrowBack, IoCloseCircle, IoRemoveCircle } from "react-icons/io5";
 import { createPost } from "@/app/actions/post";
 import { compressImage } from "@/lib/compressImage";
 import { useSession } from "@/context/SessionContext";
-import PrivacySelect, { PrivacyValue } from "@/components/dashboard-components/main/PrivacySelect";
+import PrivacySelect  from "@/components/dashboard-components/main/PrivacySelect";
 import { FALLBACK_AVATAR } from "@/lib/fallbackImage";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Location, SelectedPhoto } from "@/types/Post";
+import { PrivacyValue } from "@/types/Privacy";
 
 
 function MainModal({ isOpen, onClose, children }: { isOpen: boolean, onClose: () => void, children: React.ReactNode }) {
